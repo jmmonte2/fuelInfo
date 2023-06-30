@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
+import 'profile_creation_page.dart';
 import 'login_page.dart';
-
-import 'package:flutter/services.dart';
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -21,7 +20,7 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromRGBO(116, 116, 116, 0.1),
+      backgroundColor: const Color(0xFFEEEEEE),
       body: Center(
         child: Padding(
           padding: EdgeInsets.all(16.0),
@@ -128,6 +127,10 @@ class _RegisterPageState extends State<RegisterPage> {
                               print('Username: $username');
                               print('Email: $email');
                               print('Password: $password');
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => ProfileCreation())
+                              );
                             }
                           },
                           child: Text(
@@ -178,11 +181,11 @@ class _RegisterPageState extends State<RegisterPage> {
 
   bool checkUsernameAvailability(String username) {
     // check if username is already in use
-    return username == 'fabian';
+    return username == 'tester';
   }
 
   bool checkEmailAvailability(String email) {
     // check if email is already in use
-    return email == 'fabian.silva@live.com';
+    return email == 'tester@test.com';
   }
 }

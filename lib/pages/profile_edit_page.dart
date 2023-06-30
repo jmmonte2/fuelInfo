@@ -1,15 +1,14 @@
-import 'signup_page.dart';
-import 'dash_board_page.dart';
+import 'profilePage.dart';
 import 'package:flutter/material.dart';
 
-class ProfileCreation extends StatefulWidget {
-  const ProfileCreation({super.key});
+class ProfileEdit extends StatefulWidget {
+  const ProfileEdit({super.key});
 
   @override
-  State<ProfileCreation> createState() => _ProfileCreationState();
+  State<ProfileEdit> createState() => _ProfileEditState();
 }
 
-class _ProfileCreationState extends State<ProfileCreation> {
+class _ProfileEditState extends State<ProfileEdit> {
   String? fullName;
   String? address1;
   String? address2; //optional
@@ -96,6 +95,8 @@ class _ProfileCreationState extends State<ProfileCreation> {
       onSaved: (value) {
         fullName = value;
       },
+      // TODO Hardcode Remove Later
+      initialValue: "Bob Builder",
     );
   }
 
@@ -122,6 +123,8 @@ class _ProfileCreationState extends State<ProfileCreation> {
       onSaved: (value) {
         address1 = value;
       },
+      // TODO Hardcode Remove Later
+      initialValue: "321 Elmo Street",
     );
   }
 
@@ -145,6 +148,8 @@ class _ProfileCreationState extends State<ProfileCreation> {
       onSaved: (value) {
         address2 = value;
       },
+      // TODO Hardcode Remove Later
+      initialValue: "461 Art Avenue",
     );
   }
 
@@ -170,6 +175,8 @@ class _ProfileCreationState extends State<ProfileCreation> {
       onSaved: (value) {
         city = value;
       },
+      // TODO Hardcode Remove Later
+      initialValue: "Houston",
     );
   }
 
@@ -192,7 +199,9 @@ class _ProfileCreationState extends State<ProfileCreation> {
       })
           .values
           .toList(),
-      value: stateCode,
+      // TODO Hardcode Remove Later
+      //value: stateCode,
+      value: stateCode = 'TX',
       onChanged: (value) {
         setState(() {
           stateCode = value;
@@ -231,6 +240,8 @@ class _ProfileCreationState extends State<ProfileCreation> {
       onSaved: (value) {
         zipcode = value;
       },
+      // TODO Hardcode Remove Later
+      initialValue: "77777",
     );
   }
 
@@ -238,7 +249,7 @@ class _ProfileCreationState extends State<ProfileCreation> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Profile Creation",
+        title: const Text("Profile Edit",
             style: TextStyle(
               color: Colors.white,
               fontSize: 24,
@@ -255,7 +266,15 @@ class _ProfileCreationState extends State<ProfileCreation> {
               onPressed: () {
                 Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => RegisterPage())
+                    MaterialPageRoute(builder: (context) =>                                             const ProfilePage(
+                      userFullName: 'Bob Builder',
+                      userAddress1: '321 Elmo Street',
+                      userAddress2: '461 Art Avenue',
+                      userCity: 'Houston',
+                      userStateCode: 'TX',
+                      userZipcode: '77777',
+                    )
+                    )
                 );
               },
               tooltip: 'Go Back',
@@ -304,8 +323,15 @@ class _ProfileCreationState extends State<ProfileCreation> {
                         print(zipcode);
                         Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => const Dashboard())
-                        );
+                            MaterialPageRoute(
+                                builder: (context) => const ProfilePage(
+                                  userFullName: 'Bob Builder',
+                                  userAddress1: '321 Elmo Street',
+                                  userAddress2: '461 Art Avenue',
+                                  userCity: 'Houston',
+                                  userStateCode: 'TX',
+                                  userZipcode: '77777',
+                                )));
                       }
                     },
                   ),
