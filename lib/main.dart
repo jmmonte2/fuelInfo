@@ -1,10 +1,5 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/gestures.dart';
-import 'package:flutterproject/pages/signup_page.dart';
 import 'pages/login_page.dart';
-
 
 void main() {
   runApp(const MyApp());
@@ -16,8 +11,6 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    //bool usernameIsAlreadyInUse = true; // Simulate username already in use
-    //bool emailIsAlreadyInUse = false;
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -36,13 +29,12 @@ class MyApp extends StatelessWidget {
         //
         // This works for code too, not just values: Most code changes can be
         // tested with just a hot reload.
+
+        primarySwatch: Colors.teal,
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: RegisterPage(),
-      //usernameIsAlreadyInUse: usernameIsAlreadyInUse,
-     // emailIsAlreadyInUse: emailIsAlreadyInUse,
+      home: LoginPage(),
     );
   }
 }
-
