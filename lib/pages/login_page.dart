@@ -3,9 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'signup_page.dart';
 
-class LoginPage extends StatelessWidget {
-  // set up form
+class LoginPage extends StatefulWidget {
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
+  String username = '';
+  String password = '';
+  bool usernameIsValid = true;
+  bool passwordIsValid = true;
 
   @override
   Widget build(BuildContext context) {
@@ -45,8 +53,23 @@ class LoginPage extends StatelessWidget {
                       if (value!.isEmpty) {
                         return 'Please enter a username';
                       }
+                      if (value != 'fabian') {
+                        setState(() {
+                          usernameIsValid = false;
+                        });
+                        return 'Username does not exist';
+                      }
                       return null;
                     },
+                    onChanged: (value) {
+                      setState(() {
+                        username = value;
+                        usernameIsValid = true;
+                      });
+                    },
+                    style: TextStyle(
+                      color: usernameIsValid ? Colors.black : Colors.red,
+                    ),
                   ),
                   SizedBox(height: 16.0),
                   TextFormField(
@@ -59,14 +82,33 @@ class LoginPage extends StatelessWidget {
                       if (value!.isEmpty) {
                         return 'Please enter a password';
                       }
+                      if (username == 'fabian' && value != 'password') {
+                        setState(() {
+                          passwordIsValid = false;
+                        });
+                        return 'Incorrect password';
+                      }
                       return null;
                     },
+                    onChanged: (value) {
+                      setState(() {
+                        password = value;
+                        passwordIsValid = true;
+                      });
+                    },
+                    style: TextStyle(
+                      color: passwordIsValid ? Colors.black : Colors.red,
+                    ),
                   ),
                   SizedBox(height: 32.0),
                   ElevatedButton(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
-                        // Form is valid, perform login functionality here
+                        if (username == 'fabian' && password == 'password') {
+                          print('Login successful');
+                        } else {
+                          print('Invalid credentials');
+                        }
                       }
                     },
                     child: Text(
@@ -77,7 +119,7 @@ class LoginPage extends StatelessWidget {
                     ),
                     style: ButtonStyle(
                       minimumSize: MaterialStateProperty.all<Size>(Size(300, 40)),
-                      backgroundColor: MaterialStateProperty.all<Color>(Colors.blue), // Set the desired background color// Set the desired width and height
+                      backgroundColor: MaterialStateProperty.all<Color>(Colors.blue), // Set the desired background color
                     ),
                   ),
                   Padding(
