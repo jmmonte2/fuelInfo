@@ -1,6 +1,5 @@
-import 'profile_creation_page.dart';
-import 'fuel_quote_page.dart';
-import 'login_page.dart';
+import 'dash_board_page.dart';
+import 'profile_edit_page.dart';
 import 'package:flutter/material.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -26,7 +25,7 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   //TODO: username TEMP FIX FOR AUTHETIFCATION
-  final String currentUser = "genericUsername";
+  final String currentUser = "Tester";
 
   // final _formkey = GlobalKey<FormState>();
   // final TextEditingController _textEditingController = TextEditingController();
@@ -34,18 +33,35 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.grey[300],
+        backgroundColor: const Color(0xFFEEEEEE),
         appBar: AppBar(
           title: const Text(
             "Profile Page",
             style: TextStyle(color: Colors.white),
           ),
           centerTitle: true,
-          backgroundColor: Colors.blue,
+          backgroundColor: Colors.blueAccent,
+          leading: Builder(
+            builder: (BuildContext context) {
+              return IconButton(
+                icon: const Icon(
+                  Icons.arrow_back,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const Dashboard())
+                  );
+                },
+                tooltip: 'Go Back',
+              );
+            },
+          ),
         ),
         body: ListView(
           children: [
-            const SizedBox(height: 50),
+            const SizedBox(height: 30),
 
             //profilepic
             const Icon(
@@ -77,7 +93,7 @@ class _ProfilePageState extends State<ProfilePage> {
             // TODO: Update later to access info from database
             Container(
                 decoration: BoxDecoration(
-                    color: Colors.grey[200],
+                    color: Colors.white,
                     borderRadius: BorderRadius.circular(8)),
                 padding: const EdgeInsets.only(left: 15, bottom: 15),
                 margin: const EdgeInsets.only(left: 20, right: 20, top: 20),
@@ -101,7 +117,7 @@ class _ProfilePageState extends State<ProfilePage> {
             // TODO: Update later to access info from database instead of passing straight from creation
             Container(
                 decoration: BoxDecoration(
-                    color: Colors.grey[200],
+                    color: Colors.white,
                     borderRadius: BorderRadius.circular(8)),
                 padding: const EdgeInsets.only(left: 15, bottom: 15),
                 margin: const EdgeInsets.only(left: 20, right: 20, top: 20),
@@ -152,20 +168,18 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                     const SizedBox(height: 5),
                     Text(widget.userZipcode),
-                    const SizedBox(height: 10),
                   ],
                 )),
-
             // Navigation Buttons
             // TODO: Update later to grab info from database
             Container(
-                padding: const EdgeInsets.only(top: 10, left: 15, bottom: 15),
-                margin: const EdgeInsets.only(left: 20, right: 20, top: 20),
+                padding: const EdgeInsets.only(top: 5, left: 15, bottom: 15),
+                margin: const EdgeInsets.only(top: 5, left: 20, right: 20),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         // TODO: Update later to go to a new update info page
                         // that has options to edit individual fields
@@ -181,32 +195,8 @@ class _ProfilePageState extends State<ProfilePage> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => ProfileCreation()));
+                                      builder: (context) => const ProfileEdit()));
                             }),
-                        ElevatedButton(
-                          child: const Text(
-                            "Go to Fuel Quote Page",
-                            style: TextStyle(color: Colors.blue, fontSize: 16),
-                          ),
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => FuelQuoteForm()));
-                          },
-                        ),
-                        ElevatedButton(
-                          child: const Text(
-                            "Logout",
-                            style: TextStyle(color: Colors.blue, fontSize: 16),
-                          ),
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => LoginPage()));
-                          },
-                        )
                       ],
                     ),
                   ],

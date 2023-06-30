@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutterproject/pages/signup_page.dart';
+import 'dash_board_page.dart';
 import 'package:intl/intl.dart';
 
 class FuelQuoteForm extends StatefulWidget {
@@ -17,13 +17,14 @@ class FuelQuote extends State<FuelQuoteForm> {
   String? date;
   double suggested = 3.43; // Non-Edit
   String? total; // Non-Edit
-  double fuelTotal = 0.00;
+  double fuelTotal = 0.00; // Math Variable for test Calc, delete later
 
   TextEditingController dateInput = TextEditingController();
   final fuelInput = TextEditingController();
 
   @override
   void initState() {
+    // Real Time Variables for updating fields after input
     dateInput.text = "";
     fuelInput.text = "";
     super.initState();
@@ -51,7 +52,7 @@ class FuelQuote extends State<FuelQuoteForm> {
               onPressed: () {
                 Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => RegisterPage())
+                    MaterialPageRoute(builder: (context) => const Dashboard())
                 );
               },
               tooltip: 'Go Back',
@@ -82,12 +83,17 @@ class FuelQuote extends State<FuelQuoteForm> {
                     child: const Text("Submit",
                       style: TextStyle(color: Colors.blue, fontSize: 16,),),
                     onPressed: () {
+                      //Save Input and Sent to backend
                       if (_formKey.currentState!.validate()) {
                         _formKey.currentState?.save();
                         print(gallons);
                         print(address);
                         print(date);
                         print(total);
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const Dashboard())
+                        );
                         return;
                       }
                     }
@@ -100,7 +106,6 @@ class FuelQuote extends State<FuelQuoteForm> {
     );
   }
 
-  @override
   Widget buildGallons() {
     return TextFormField(
       decoration: const InputDecoration(
@@ -119,12 +124,14 @@ class FuelQuote extends State<FuelQuoteForm> {
         }
         return null;
       },
+      // Real Time Update
       onChanged: (value) {
         setState(() {
           fuelTotal = double.parse(value.toString()) * suggested;
           setState(() => fuelInput.text = fuelTotal.toString());
         });
       },
+      // Set Variable for backend
       onSaved: (value) => setState(() => gallons = value),
     );
   }
@@ -145,8 +152,9 @@ class FuelQuote extends State<FuelQuoteForm> {
         }
         return null;
       },
+      // Set Variable for backend
       onSaved: (value) => setState(() => address = value),
-      initialValue: address ?? "Pulled Address",
+      initialValue: address ?? "321 Elmo Street",
     );
   }
 
@@ -161,6 +169,7 @@ class FuelQuote extends State<FuelQuoteForm> {
       ),
       readOnly: true,
       maxLines: 1,
+      // DateTime class to create a on tap calender picker
       onTap: () async {
         DateTime? userDate = await showDatePicker(
             context: context,
@@ -170,6 +179,7 @@ class FuelQuote extends State<FuelQuoteForm> {
         );
         if (userDate != null) {
           String validDate = DateFormat('yyyy-MM-dd').format(userDate);
+          // Real Time Variable
           setState(() => dateInput.text = validDate);
         }
       },
@@ -182,6 +192,7 @@ class FuelQuote extends State<FuelQuoteForm> {
         }
         return null;
       },
+      // Set Variable for backend
       onSaved: (value) => setState(() => date = value),
     );
   }
@@ -226,6 +237,7 @@ class FuelQuote extends State<FuelQuoteForm> {
         }
         return null;
       },
+      // Set Variable for backend
       onSaved: (value) => setState(() => total = value),
     );
   }
