@@ -4,8 +4,8 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:untitled/pages/login_page.dart';
-import 'package:untitled/pages/profile_creation_page.dart';
+import 'package:flutterproject/pages/login_page.dart';
+import 'package:flutterproject/pages/profile_creation_page.dart';
 
 
 class HttpRequest {
