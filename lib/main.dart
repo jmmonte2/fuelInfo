@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'pages/login_page.dart';
+import 'pages/signup_page.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+
 
 void main() {
   runApp(const MyApp());
@@ -34,7 +37,8 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: LoginPage(),
+      home: RegisterPage(),
+      builder: EasyLoading.init(),
     );
   }
 }
