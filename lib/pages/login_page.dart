@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'dash_board_page.dart';
 import 'signup_page.dart';
+import '/services/http_request.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -57,13 +58,13 @@ class _LoginPageState extends State<LoginPage> {
                             if (value!.isEmpty) {
                               return 'Please enter a username';
                             }
-                            if (value != 'tester') {
-                              setState(() {
-                                usernameIsValid = false;
-                              });
-                              return 'Username does not exist';
-                            }
-                            return null;
+                            // if (value != 'tester') {
+                            //   setState(() {
+                            //     usernameIsValid = false;
+                            //   });
+                            //   return 'Username does not exist';
+                            // }
+                            // return null;
                           },
                           onChanged: (value) {
                             setState(() {
@@ -86,13 +87,13 @@ class _LoginPageState extends State<LoginPage> {
                             if (value!.isEmpty) {
                               return 'Please enter a password';
                             }
-                            if (username == 'tester' && value != 'test1234') {
-                              setState(() {
-                                passwordIsValid = false;
-                              });
-                              return 'Incorrect password';
-                            }
-                            return null;
+                            // if (username == 'tester' && value != 'test1234') {
+                            //   setState(() {
+                            //     passwordIsValid = false;
+                            //   });
+                            //   return 'Incorrect password';
+                            // }
+                            // return null;
                           },
                           onChanged: (value) {
                             setState(() {
@@ -106,17 +107,21 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         SizedBox(height: 32.0),
                         ElevatedButton(
-                          onPressed: () {
+                          onPressed: () async {
                             if (_formKey.currentState!.validate()) {
-                              if (username == 'tester' && password == 'test1234') {
-                                print('Login successful');
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => const Dashboard()),
-                                );
-                              } else {
-                                print('Invalid credentials');
-                              }
+                              print(username);
+                              print(password);
+                              // makes call
+                              await HttpRequest.handleLogin(username, password, context);
+                              // if (username == 'tester' && password == 'test1234') {
+                              //   print('Login successful');
+                              //   Navigator.push(
+                              //     context,
+                              //     MaterialPageRoute(builder: (context) => const Dashboard()),
+                              //   );
+                              // } else {
+                              //   print('Invalid credentials');
+                              // }
                             }
                           },
                           child: Text(

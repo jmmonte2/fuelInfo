@@ -1,7 +1,10 @@
+import 'dart:html';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'profile_creation_page.dart';
 import 'login_page.dart';
+import '/services/http_request.dart';
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -84,10 +87,10 @@ class _RegisterPageState extends State<RegisterPage> {
                             if (value!.isEmpty) {
                               return 'Please enter an email address';
                             }
-                            if (emailIsAlreadyInUse) {
-                              return 'Email already in use';
-                            }
-                            return null;
+                            // if (emailIsAlreadyInUse) {
+                            //   return 'Email already in use';
+                            // }f
+                            // return null;
                           },
                           style: TextStyle(
                             color: emailIsAlreadyInUse ? Colors.red : Colors.black,
@@ -120,17 +123,19 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                         SizedBox(height: 32.0),
                         ElevatedButton(
-                          onPressed: () {
+                          onPressed: () async {
                             if (_formKey.currentState!.validate()) {
                               // Form is valid, perform registration functionality here
                               // Since we don't have a backend, print the user information
                               print('Username: $username');
                               print('Email: $email');
                               print('Password: $password');
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => ProfileCreation())
-                              );
+
+                              await HttpRequest.handleSignUp(username, password, email, context);
+                              // Navigator.push(
+                              //     context,
+                              //     MaterialPageRoute(builder: (context) => ProfileCreation())
+                              // );
                             }
                           },
                           child: Text(
