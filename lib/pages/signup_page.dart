@@ -1,10 +1,7 @@
-import 'dart:html';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
-import 'profile_creation_page.dart';
 import 'login_page.dart';
-import '/services/http_request.dart';
+import 'package:flutterproject/services/http_request.dart';
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -25,160 +22,162 @@ class _RegisterPageState extends State<RegisterPage> {
     return Scaffold(
       backgroundColor: const Color(0xFFEEEEEE),
       body: Center(
-        child: Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Flexible(
-            child: SingleChildScrollView(
-              child: Center(
-                child: Container(
-                  constraints: BoxConstraints(
-                    maxHeight: MediaQuery.of(context).size.height - 80.0,
-                  ),
-                  padding: EdgeInsets.symmetric(horizontal: 16.0),
-                  decoration: BoxDecoration(
-                    color: Color.fromRGBO(255, 255, 255, 1),
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'Sign up!',
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                          ),
-                        ),
-                        SizedBox(height: 16.0),
-                        TextFormField(
-                          decoration: InputDecoration(
-                            labelText: 'Username',
-                            labelStyle: TextStyle(color: Colors.black),
-                          ),
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return 'Please enter a username';
-                            }
-                            if (usernameIsAlreadyInUse) {
-                              return 'Username already in use';
-                            }
-                            return null;
-                          },
-                          style: TextStyle(
-                            color: usernameIsAlreadyInUse ? Colors.red : Colors.black,
-                          ),
-                          onChanged: (value) {
-                            setState(() {
-                              username = value;
-                              usernameIsAlreadyInUse = checkUsernameAvailability(username);
-                            });
-                          },
-                        ),
-                        SizedBox(height: 16.0),
-                        TextFormField(
-                          decoration: InputDecoration(
-                            labelText: 'Email',
-                            labelStyle: TextStyle(color: Colors.black),
-                          ),
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return 'Please enter an email address';
-                            }
-                            // if (emailIsAlreadyInUse) {
-                            //   return 'Email already in use';
-                            // }f
-                            // return null;
-                          },
-                          style: TextStyle(
-                            color: emailIsAlreadyInUse ? Colors.red : Colors.black,
-                          ),
-                          onChanged: (value) {
-                            setState(() {
-                              email = value;
-                              emailIsAlreadyInUse = checkEmailAvailability(email);
-                            });
-                          },
-                        ),
-                        SizedBox(height: 16.0),
-                        TextFormField(
-                          decoration: InputDecoration(
-                            labelText: 'Password',
-                            labelStyle: TextStyle(color: Colors.black),
-                          ),
-                          obscureText: true,
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return 'Please enter a password';
-                            }
-                            return null;
-                          },
-                          onChanged: (value) {
-                            setState(() {
-                              password = value;
-                            });
-                          },
-                        ),
-                        SizedBox(height: 32.0),
-                        ElevatedButton(
-                          onPressed: () async {
-                            if (_formKey.currentState!.validate()) {
-                              // Form is valid, perform registration functionality here
-                              // Since we don't have a backend, print the user information
-                              print('Username: $username');
-                              print('Email: $email');
-                              print('Password: $password');
-
-                              await HttpRequest.handleSignUp(username, password, email, context);
-                              // Navigator.push(
-                              //     context,
-                              //     MaterialPageRoute(builder: (context) => ProfileCreation())
-                              // );
-                            }
-                          },
-                          child: Text(
-                            'Submit',
+        child: Flex(
+          direction: Axis.vertical,
+          children: <Widget>[
+            Flexible(
+              child: SingleChildScrollView(
+                child: Center(
+                  child: Container(
+                    constraints: BoxConstraints(
+                      maxHeight: MediaQuery.of(context).size.height - 80.0,
+                    ),
+                    padding: EdgeInsets.symmetric(horizontal: 16.0),
+                    decoration: BoxDecoration(
+                      color: Color.fromRGBO(255, 255, 255, 1),
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Sign up!',
                             style: TextStyle(
-                              color: Colors.white,
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
                             ),
                           ),
-                          style: ButtonStyle(
-                            minimumSize: MaterialStateProperty.all<Size>(Size(300, 40)),
-                            backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
+                          SizedBox(height: 16.0),
+                          TextFormField(
+                            decoration: InputDecoration(
+                              labelText: 'Username',
+                              labelStyle: TextStyle(color: Colors.black),
+                            ),
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Please enter a username';
+                              }
+                              if (usernameIsAlreadyInUse) {
+                                return 'Username already in use';
+                              }
+                              return null;
+                            },
+                            style: TextStyle(
+                              color: usernameIsAlreadyInUse ? Colors.red : Colors.black,
+                            ),
+                            onChanged: (value) {
+                              setState(() {
+                                username = value;
+                                usernameIsAlreadyInUse = checkUsernameAvailability(username);
+                              });
+                            },
                           ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.all(10.0),
-                          child: RichText(
-                            text: TextSpan(
-                              children: [
-                                TextSpan(
-                                  text: 'Click here if already have an account',
-                                  style: TextStyle(
-                                    color: Colors.blue,
-                                    decoration: TextDecoration.underline,
+                          SizedBox(height: 16.0),
+                          TextFormField(
+                            decoration: InputDecoration(
+                              labelText: 'Email',
+                              labelStyle: TextStyle(color: Colors.black),
+                            ),
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Please enter an email address';
+                              }
+                              // if (emailIsAlreadyInUse) {
+                              //   return 'Email already in use';
+                              // }f
+                              // return null;
+                            },
+                            style: TextStyle(
+                              color: emailIsAlreadyInUse ? Colors.red : Colors.black,
+                            ),
+                            onChanged: (value) {
+                              setState(() {
+                                email = value;
+                                emailIsAlreadyInUse = checkEmailAvailability(email);
+                              });
+                            },
+                          ),
+                          SizedBox(height: 16.0),
+                          TextFormField(
+                            decoration: InputDecoration(
+                              labelText: 'Password',
+                              labelStyle: TextStyle(color: Colors.black),
+                            ),
+                            obscureText: true,
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Please enter a password';
+                              }
+                              return null;
+                            },
+                            onChanged: (value) {
+                              setState(() {
+                                password = value;
+                              });
+                            },
+                          ),
+                          SizedBox(height: 32.0),
+                          ElevatedButton(
+                            onPressed: () async {
+                              if (_formKey.currentState!.validate()) {
+                                // Form is valid, perform registration functionality here
+                                // Since we don't have a backend, print the user information
+                                print('Username: $username');
+                                print('Email: $email');
+                                print('Password: $password');
+
+                                await HttpRequest.handleSignUp(username, password, email, context);
+                                // Navigator.push(
+                                //     context,
+                                //     MaterialPageRoute(builder: (context) => ProfileCreation())
+                                // );
+                              }
+                            },
+                            child: Text(
+                              'Submit',
+                              style: TextStyle(
+                                color: Colors.white,
+                              ),
+                            ),
+                            style: ButtonStyle(
+                              minimumSize: MaterialStateProperty.all<Size>(Size(300, 40)),
+                              backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.all(10.0),
+                            child: RichText(
+                              text: TextSpan(
+                                children: [
+                                  TextSpan(
+                                    text: 'Click here if already have an account',
+                                    style: TextStyle(
+                                      color: Colors.blue,
+                                      decoration: TextDecoration.underline,
+                                    ),
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(builder: (context) => LoginPage()),
+                                        );
+                                      },
                                   ),
-                                  recognizer: TapGestureRecognizer()
-                                    ..onTap = () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(builder: (context) => LoginPage()),
-                                      );
-                                    },
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ),
+            )
+          ],
         ),
       ),
     );

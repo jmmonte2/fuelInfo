@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dash_board_page.dart';
 import 'package:intl/intl.dart';
+import 'package:flutterproject/services/http_request.dart';
 
 class FuelQuoteForm extends StatefulWidget {
   const FuelQuoteForm({super.key});
@@ -82,19 +83,11 @@ class FuelQuote extends State<FuelQuoteForm> {
                   ElevatedButton(
                     child: const Text("Submit",
                       style: TextStyle(color: Colors.blue, fontSize: 16,),),
-                    onPressed: () {
+                    onPressed: () async{
                       //Save Input and Sent to backend
                       if (_formKey.currentState!.validate()) {
                         _formKey.currentState?.save();
-                        print(gallons);
-                        print(address);
-                        print(date);
-                        print(total);
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => const Dashboard())
-                        );
-                        return;
+                        await HttpRequest.handleQuotePost("1", gallons.toString(), address.toString(), date.toString(), suggested.toString(), total.toString(), context);
                       }
                     }
                     ,)
@@ -128,7 +121,7 @@ class FuelQuote extends State<FuelQuoteForm> {
       onChanged: (value) {
         setState(() {
           fuelTotal = double.parse(value.toString()) * suggested;
-          setState(() => fuelInput.text = fuelTotal.toString());
+          setState(() => fuelInput.text = fuelTotal.toStringAsFixed(2));
         });
       },
       // Set Variable for backend
