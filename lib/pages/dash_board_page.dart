@@ -4,9 +4,11 @@ import 'fuel_quote_page.dart';
 import 'fuel_quote_history_page.dart';
 import 'profilePage.dart';
 import 'login_page.dart';
+import 'package:http/http.dart' as http;
 
 class Dashboard extends StatelessWidget {
   const Dashboard({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -563,6 +565,7 @@ class Dashboard extends StatelessWidget {
                 ],
               ),
             ),
+            const SizedBox(height: 60),
           ],
         )
       ),

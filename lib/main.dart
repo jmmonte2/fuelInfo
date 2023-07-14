@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'pages/login_page.dart';
+import 'pages/dash_board_page.dart';
 import 'pages/signup_page.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
@@ -37,7 +37,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: RegisterPage(),
+      home: Dashboard(),
       builder: EasyLoading.init(),
     );
   }
