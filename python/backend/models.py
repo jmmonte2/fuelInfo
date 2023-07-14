@@ -15,7 +15,7 @@ class Quote(db.Model):
     address = db.Column(db.String(100), nullable=False)
     date = db.Column(db.Date, nullable=False)
     suggested = db.Column(db.Float, nullable=False)
-    total = db.Column(db.Integer, nullable=False)
+    total = db.Column(db.Float, nullable=False)
 
 
     
