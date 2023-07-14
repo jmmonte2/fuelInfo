@@ -14,7 +14,6 @@ class HttpRequest {
   static final httpClient = http.Client();
   static var loginEndPoint = Uri.parse('http://127.0.0.1:5000/login');
   static var signUpEndPoint = Uri.parse('http://127.0.0.1:5000/signup');
-  static var quoteEndPoint = Uri.parse('http://127.0.0.1:5000/quote');
 
   static handleSignUp(username, password, email, context) async {
     //Change Local Host uri when running on an android device
@@ -54,7 +53,6 @@ class HttpRequest {
 
   }
 
-
   static handleLogin(username, password, context) async {
     // send post request
     http.Response response = await httpClient.post(loginEndPoint, body: {
@@ -87,14 +85,14 @@ class HttpRequest {
 //  userName,
 
   static handleQuotePost(userId, gallons, address, date, suggested, total, context) async {
+    var quoteEndPoint = Uri.parse('http://127.0.0.1:5000/quote/$userId');
     //Change Local Host uri when running on an android device
     if (defaultTargetPlatform == TargetPlatform.android){
-      quoteEndPoint = Uri.parse('http://10.0.2.2:5000/quote');
+      quoteEndPoint = Uri.parse('http://10.0.2.2:5000/quote/$userId');
     }
 
     // send post request
     http.Response response = await httpClient.post(quoteEndPoint, body: {
-      "user_id": userId,
       "gallons": gallons,
       "address" : address,
       "date" : date,
@@ -124,6 +122,94 @@ class HttpRequest {
 
     }
 
+  }
+
+  static handleQuoteGet(id) async {
+    var quoteEndPoint = Uri.parse('http://127.0.0.1:5000/quote/$id');
+    //Change Local Host uri when running on an android device
+    if (defaultTargetPlatform == TargetPlatform.android){
+      quoteEndPoint = Uri.parse('http://10.0.2.2:5000/quote/$id');
+    }
+
+    // send post request
+    http.Response response = await httpClient.get(quoteEndPoint);
+
+    // error occurs
+    if (response.statusCode != 200) {
+      await EasyLoading.showError(
+          "Error Code : ${response.statusCode.toString()}");
+    } else {
+      // response received by endpoint
+      final decodedResponse = json.decode(response.body);
+      final List<Map<String, dynamic>> map = List.from(decodedResponse);
+      return (map);
+
+    }
+
+  }
+
+  static handleFuelQuoteGet(id) async {
+    var fuelQuoteEndPoint = Uri.parse('http://127.0.0.1:5000/fuelquote/$id');
+    //Change Local Host uri when running on an android device
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      fuelQuoteEndPoint = Uri.parse('http://10.0.2.2:5000/fuelquote/$id');
+    }
+
+    // send post request
+    http.Response response = await httpClient.get(fuelQuoteEndPoint);
+
+    // error occurs
+    if (response.statusCode != 200) {
+      await EasyLoading.showError(
+          "Error Code : Data Could Not Be Pulled");
+    } else {
+      // response received by endpoint
+      Map<String, dynamic> map = json.decode(response.body);
+      return (map);
+    }
+  }
+
+  static handleDashGet(id) async {
+    var dashboardEndPoint = Uri.parse('http://127.0.0.1:5000/dashboard/$id');
+    //Change Local Host uri when running on an android device
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      dashboardEndPoint = Uri.parse('http://10.0.2.2:5000/dashboard/$id');
+    }
+
+    // send post request
+    http.Response response = await httpClient.get(dashboardEndPoint);
+
+    // error occurs
+    if (response.statusCode != 200) {
+      await EasyLoading.showError(
+          "Error Code : Data Could Not Be Pulled");
+    } else {
+      // response received by endpoint
+      final decodedResponse = json.decode(response.body);
+      final List<Map<String, dynamic>> map = List.from(decodedResponse);
+      return (map);
+    }
+  }
+
+  static handleCustomerGet(id) async {
+    var dashboardEndPoint = Uri.parse('http://127.0.0.1:5000/customer/$id');
+    //Change Local Host uri when running on an android device
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      dashboardEndPoint = Uri.parse('http://10.0.2.2:5000/customer/$id');
+    }
+
+    // send post request
+    http.Response response = await httpClient.get(dashboardEndPoint);
+
+    // error occurs
+    if (response.statusCode != 200) {
+      await EasyLoading.showError(
+          "Error Code : Data Could Not Be Pulled");
+    } else {
+      // response received by endpoint
+      Map<String, dynamic> map = json.decode(response.body);
+      return (map);
+    }
   }
 
 }

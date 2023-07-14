@@ -1,16 +1,133 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'fuel_quote_page.dart';
 import 'fuel_quote_history_page.dart';
 import 'profilePage.dart';
 import 'login_page.dart';
-import 'package:http/http.dart' as http;
+import 'package:flutterproject/services/http_request.dart';
 
-class Dashboard extends StatelessWidget {
+class Dashboard extends StatefulWidget{
   const Dashboard({super.key});
 
   @override
+  Dash createState() {
+    return Dash();
+  }
+}
+
+class Dash extends State<Dashboard> {
+  String username = "debug";
+  List<Map<String, dynamic>> quotes = [];
+
+  @override
+  void initState(){
+    super.initState();
+    fetchData();
+  }
+
+  Future<void> fetchData() async {
+    Map<String, dynamic> autoFillData = await HttpRequest.handleCustomerGet(1);
+    quotes = await HttpRequest.handleDashGet(1);
+    setState(() {
+      username = autoFillData['username'];
+    });
+  }
+
+
+  @override
   Widget build(BuildContext context) {
+    List<Widget> quoteList = [];
+    for (var i = 0; i < quotes.length; i++) {
+      DateTime date = DateFormat('EEE, dd MMM yyyy HH:mm:ss').parse(quotes[i]['date']);
+      String formattedDate = DateFormat('yyyy-MM-dd').format(date);
+      quoteList.add(
+        Row(
+          children: [
+            Column(
+              children: [
+                const Text(
+                  "Invoiced",
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Container(
+                  height: 20,
+                  width: 20,
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Color(0xFFEEEEEE),
+                  ),
+                  alignment: Alignment.center,
+                  child: const Icon(
+                    Icons.check_circle,
+                    size: 20,
+                    color: Colors.green,
+                  ),
+                ),
+              ],
+            ),
+            const Spacer(),
+            Column(
+              children: [
+                const Text(
+                  "Gallons",
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  quotes[i]['gallons'].toString(),
+                  style: const TextStyle(
+                    fontSize: 15.0,
+                  ),
+                ),
+              ],
+            ),
+            const Spacer(),
+            Column(
+              children: [
+                const Text(
+                  "Date",
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  formattedDate,
+                  style: const TextStyle(
+                    fontSize: 15.0,
+                  ),
+                ),
+              ],
+            ),
+            const Spacer(),
+            Column(
+              children: [
+                const Text(
+                  "Total",
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  "\$${quotes[i]['total']}",
+                  style: const TextStyle(
+                    fontSize: 15.0,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+      quoteList.add(const SizedBox(height: 24));
+    }
     return Scaffold(
       backgroundColor: const Color(0xFFEEEEEE),
       body: SingleChildScrollView(
@@ -51,10 +168,10 @@ class Dashboard extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(width: 12),
-                        const Column(
+                        Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
+                            const Text(
                               "Hello",
                               style: TextStyle(
                                   color: Colors.white,
@@ -63,7 +180,7 @@ class Dashboard extends StatelessWidget {
                               ),
                             ),
                             Text(
-                              "Tester",
+                              username!,
                               style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 18.0,
@@ -140,259 +257,9 @@ class Dashboard extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 24),
-                      // TODO: Call from backend/database for quote info, sort by newest, select 3
-                      Row(
-                        children: [
-                          Column(
-                            children: [
-                              const Text(
-                                "Invoiced",
-                                style: TextStyle(
-                                  fontSize: 16.0,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Container(
-                                height: 20,
-                                width: 20,
-                                decoration: const BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Color(0xFFEEEEEE),
-                                ),
-                                alignment: Alignment.center,
-                                child: const Icon(
-                                  Icons.check_circle,
-                                  size: 20,
-                                  color: Colors.green,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const Spacer(),
-                          const Column(
-                            children: [
-                              Text(
-                                "Gallons",
-                                style: TextStyle(
-                                  fontSize: 16.0,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Text(
-                                  "3",
-                                style: TextStyle(
-                                  fontSize: 15.0,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const Spacer(),
-                          const Column(
-                            children: [
-                              Text(
-                                "Date",
-                                style: TextStyle(
-                                  fontSize: 16.0,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Text(
-                                  "2023-06-30",
-                                style: TextStyle(
-                                  fontSize: 15.0,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const Spacer(),
-                          const Column(
-                            children: [
-                              Text(
-                                "Total",
-                                style: TextStyle(
-                                  fontSize: 16.0,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Text(
-                                  "\$300",
-                                style: TextStyle(
-                                  fontSize: 15.0,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
+                      Column(
+                        children: quoteList,
                       ),
-                      const SizedBox(height: 24),
-                      Row(
-                        children: [
-                          Column(
-                            children: [
-                              const Text(
-                                "Invoiced",
-                                style: TextStyle(
-                                  fontSize: 16.0,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Container(
-                                height: 20,
-                                width: 20,
-                                decoration: const BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Color(0xFFEEEEEE),
-                                ),
-                                alignment: Alignment.center,
-                                child: const Icon(
-                                  Icons.check_circle,
-                                  size: 20,
-                                  color: Colors.green,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const Spacer(),
-                          const Column(
-                            children: [
-                              Text(
-                                "Gallons",
-                                style: TextStyle(
-                                  fontSize: 16.0,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Text(
-                                  "14",
-                                style: TextStyle(
-                                  fontSize: 15.0,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const Spacer(),
-                          const Column(
-                            children: [
-                              Text(
-                                "Date",
-                                style: TextStyle(
-                                  fontSize: 16.0,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Text(
-                                  "2023-06-27",
-                                style: TextStyle(
-                                  fontSize: 15.0,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const Spacer(),
-                          const Column(
-                            children: [
-                              Text(
-                                "Total",
-                                style: TextStyle(
-                                  fontSize: 16.0,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Text(
-                                  "\$1400",
-                                style: TextStyle(
-                                  fontSize: 15.0,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 24),
-                      Row(
-                        children: [
-                          Column(
-                            children: [
-                              const Text(
-                                "Invoiced",
-                                style: TextStyle(
-                                  fontSize: 16.0,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Container(
-                                height: 20,
-                                width: 20,
-                                decoration: const BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Color(0xFFEEEEEE),
-                                ),
-                                alignment: Alignment.center,
-                                child: const Icon(
-                                  Icons.check_circle,
-                                  size: 20,
-                                  color: Colors.green,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const Spacer(),
-                          const Column(
-                            children: [
-                              Text(
-                                "Gallons",
-                                style: TextStyle(
-                                  fontSize: 16.0,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Text(
-                                  "5",
-                                  style: TextStyle(
-                                    fontSize: 15.0,
-                                  ),
-                              ),
-                            ],
-                          ),
-                          const Spacer(),
-                          const Column(
-                            children: [
-                              Text(
-                                "Date",
-                                style: TextStyle(
-                                  fontSize: 16.0,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Text(
-                                  "2023-06-24",
-                                  style: TextStyle(
-                                  fontSize: 15.0,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const Spacer(),
-                          const Column(
-                            children: [
-                              Text(
-                                "Total",
-                                style: TextStyle(
-                                  fontSize: 16.0,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Text(
-                                  "\$500",
-                                  style: TextStyle(
-                                    fontSize: 15.0,
-                                  ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 24),
                       Row(
                         children: [
                           const Spacer(),
