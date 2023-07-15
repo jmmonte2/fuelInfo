@@ -16,53 +16,19 @@ class FuelQuote extends State<FuelQuoteForm> {
   String? gallons;
   String? address; // Non-Edit
   String? date;
-  double suggested = 3.14; // Non-Edit
+  double suggested = 3.43; // Non-Edit
   String? total; // Non-Edit
-  double fuelTotal = 0.00;
-  String? address1;
-  String? address2;
-  List<DropdownMenuItem<String>> dropdownItems = [];
-
+  double fuelTotal = 0.00; // Math Variable for test Calc, delete later
 
   TextEditingController dateInput = TextEditingController();
   final fuelInput = TextEditingController();
-  final addressInput = TextEditingController();
 
   @override
-  void initState(){
+  void initState() {
     // Real Time Variables for updating fields after input
     dateInput.text = "";
     fuelInput.text = "";
-    addressInput.text = "";
     super.initState();
-    fetchData();
-
-  }
-
-  Future<void> fetchData() async {
-    Map<String, dynamic> autoFillData = await HttpRequest.handleFuelQuoteGet(1);
-    setState(() {
-      address1 = autoFillData['address1'];
-      addressInput.text = address1.toString();
-      address2 = autoFillData['address2'];
-      suggested = double.parse(autoFillData['suggested']);
-
-      dropdownItems = [
-        DropdownMenuItem<String>(
-          value: address1,
-          child: Text(address1!),
-        ),
-      ];
-
-      if (address2 != null) {
-        dropdownItems.add(
-          DropdownMenuItem<String>(
-            value: address2,
-            child: Text(address2!),
-          ),
-        );
-      }
-    });
   }
 
   final _formKey = GlobalKey<FormState>();
@@ -106,8 +72,7 @@ class FuelQuote extends State<FuelQuoteForm> {
                   const SizedBox(height: 20),
                   buildGallons(),
                   const SizedBox(height: 10),
-                  if (address2 != null) buildAddress(),
-                  if (address2 == null) buildAddressStatic(),
+                  buildAddress(),
                   const SizedBox(height: 10),
                   buildDate(),
                   const SizedBox(height: 10),
@@ -165,34 +130,8 @@ class FuelQuote extends State<FuelQuoteForm> {
   }
 
   Widget buildAddress() {
-    return DropdownButtonFormField(
-      decoration: const InputDecoration(
-        labelText: "Address",
-        contentPadding: EdgeInsets.all(20.0),
-        isDense: true,
-        border: OutlineInputBorder(),
-      ),
-      value: address1,
-      onChanged: (value) {
-        setState(() {
-        });
-      },
-      items: dropdownItems,
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'Address Required';
-        }
-        return null;
-      },
-      // Set Variable for backend
-      onSaved: (value) => setState(() => address = value),
-    );
-  }
-
-  Widget buildAddressStatic() {
     return TextFormField(
       enabled: false,
-      controller: addressInput,
       decoration: const InputDecoration(
         labelText: "Address",
         contentPadding: EdgeInsets.all(20.0),
@@ -208,6 +147,7 @@ class FuelQuote extends State<FuelQuoteForm> {
       },
       // Set Variable for backend
       onSaved: (value) => setState(() => address = value),
+      initialValue: address ?? "321 Elmo Street",
     );
   }
 
