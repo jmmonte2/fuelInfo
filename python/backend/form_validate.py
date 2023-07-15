@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, IntegerField, DateField, FloatField
-from wtforms.validators import DataRequired, Length, Email, Regexp
+from wtforms.validators import DataRequired, Length, Email, Regexp, Optional
 
 class QuoteForm(FlaskForm):
     gallons = IntegerField('Gallons', validators=[DataRequired()])
@@ -19,3 +19,12 @@ class LoginForm(FlaskForm):
     # Form fields for login
     username = StringField('Username', validators=[DataRequired(), Length(min=4, max=20)])  # Field for username with validation for required and length constraints
     password = StringField('Password', validators=[DataRequired(), Length(min=8, max=30)])  # Field for password with validation for required and length constraints
+
+class UserProfileForm(FlaskForm):
+    user_id = IntegerField('User_Id', validators=[DataRequired()])
+    fullname = StringField('Full Name', validators=[DataRequired()])
+    address1 = StringField('Address 1', validators=[DataRequired()])
+    address2 = StringField('Address 2', validators=[Optional()])
+    city = StringField('City', validators=[DataRequired()])
+    stateCode = StringField('State Code', validators=[DataRequired()])
+    zipcode = StringField('Zip Code', validators=[DataRequired(), Length(min=5)])

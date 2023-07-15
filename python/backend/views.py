@@ -2,7 +2,7 @@ from flask import Blueprint, request, json, jsonify
 from .models import Customer, Quote, Profile
 from backend import db
 from flask_cors import CORS, cross_origin
-from .form_validate import QuoteForm, LoginForm, SignUpForm
+from .form_validate import QuoteForm, LoginForm, SignUpForm, UserProfileForm
 from passlib.hash import bcrypt
 from wtforms import PasswordField
 
@@ -181,3 +181,54 @@ def getCustomerData(id):
             username = row.username
             d['username'] = username
         return jsonify (d)
+    
+@views.route('/profileCreation', methods=["GET", "POST"])
+@cross_origin(supports_credentials=True)
+def profileCreation():
+    if request.method == "POST":
+        user_id = request.form["user_id"]
+        fullname = request.form["fullname"]
+        address1 = request.form["address1"]
+        address2 = request.form["address2"]
+        city = request.form["city"]
+        stateCode = request.form["stateCode"]
+        zipcode = request.form["zipcode"]
+
+        #Backend Validation
+        print("Profile Successfully Pulled")
+        form = UserProfileForm(request.form)
+        if form.validate():
+            user_id = form.user_id.data
+            fullname = form.fullname.data
+            address1 = form.address1.data
+            address2 = form.address2.data
+            city = form.city.data
+            stateCode = form.stateCode.data
+            zipcode = form.zipcode.data
+
+            db.session.add(Profile(user_id = user_id, fullname = fullname, address1 = address1, address2 = address2, city = city, stateCode = stateCode, zipcode = zipcode))
+            db.session.commit()
+            print("Profile Successfully Created")
+
+            return jsonify([ "Profile created"])
+
+        else:
+            print("Profile Failed Validation")
+            errors = form.errors
+            return jsonify([str(errors)])
+        
+@views.route('/profileInfo/<int:id>', methods=["GET"])
+@cross_origin(supports_credentials=True)
+def getProfile(id):
+    if request.method == "GET":
+        info = {}
+        found_user = Profile.query.filter_by(user_id = id).first()
+        if found_user:
+            info['fullname'] = found_user.fullname
+            info['address1'] = found_user.address1
+            info['address2'] = found_user.address2
+            info['city'] = found_user.city
+            info['stateCode'] = found_user.stateCode
+            info['zipcode'] = found_user.zipcode
+        return jsonify (info)
+           

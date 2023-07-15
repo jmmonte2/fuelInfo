@@ -1,3 +1,5 @@
+import 'dart:js';
+
 import 'package:flutter/services.dart';
 import 'package:flutterproject/pages/dash_board_page.dart';
 import 'package:http/http.dart' as http;
@@ -14,6 +16,7 @@ class HttpRequest {
   static final httpClient = http.Client();
   static var loginEndPoint = Uri.parse('http://127.0.0.1:5000/login');
   static var signUpEndPoint = Uri.parse('http://127.0.0.1:5000/signup');
+  static var profileEndPoint = Uri.parse('http://127.0.0.1:5000/profileCreation');
 
   static handleSignUp(username, password, email, context) async {
     //Change Local Host uri when running on an android device
@@ -72,8 +75,7 @@ class HttpRequest {
 
       if (json[0] == 'success') {
         await EasyLoading.showSuccess(json[0]);
-        await Navigator.push(
-            context, MaterialPageRoute(builder: (context) => ProfileCreation()));
+        handleProfileCheck(1, context);
       } else {
         EasyLoading.showError(json[0]);
       }
@@ -83,6 +85,32 @@ class HttpRequest {
 
   }
 //  userName,
+  static handleProfileCheck(id, context) async {
+    var profileCheckEndPoint = Uri.parse('http://127.0.0.1:5000/profileInfo/$id');
+    // send post request
+    http.Response response = await httpClient.get(profileCheckEndPoint);
+    // error occurs
+    if (response.statusCode != 200) {
+      await EasyLoading.showError(
+          "Error Code : ${response.statusCode.toString()}");
+    } else {
+      // response received by endpoint
+      print(jsonDecode(response.body));
+      var json = jsonDecode(response.body);
+      if (json != null ) {
+        await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => Dashboard()));
+      } else {
+        await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ProfileCreation()));
+      }
+
+
+    }
+
+  }
 
   static handleQuotePost(userId, gallons, address, date, suggested, total, context) async {
     var quoteEndPoint = Uri.parse('http://127.0.0.1:5000/quote/$userId');
@@ -209,6 +237,38 @@ class HttpRequest {
       // response received by endpoint
       Map<String, dynamic> map = json.decode(response.body);
       return (map);
+    }
+  }
+
+  static handleProfileCreation(userId, fullname, address1, address2, city, stateCode, zipcode, context) async {
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      profileEndPoint = Uri.parse('http://10.0.2.2:5000/profileCreation');
+    }
+    http.Response response = await httpClient.post(profileEndPoint, body: {
+      "user_id": userId,
+      "fullname": fullname,
+      "address1": address1,
+      "address2": address2,
+      "city": city,
+      "stateCode": stateCode,
+      "zipcode": zipcode,
+    });
+
+    if (response.statusCode != 200) {
+      await EasyLoading.showError(
+          "Error Code : ${response.statusCode.toString()}");
+    } else {
+      // response received by endpoint
+      var json = jsonDecode(response.body);
+
+      if (json[0] == 'Profile created') {
+        await EasyLoading.showSuccess(json[0]);
+        await Navigator.push(context,
+            MaterialPageRoute(builder: (context) => const Dashboard()));
+      } else {
+        EasyLoading.showError(json[0]);
+        print(json[0]);
+      }
     }
   }
 

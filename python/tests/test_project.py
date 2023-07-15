@@ -74,3 +74,21 @@ def test_customer_data_get(client, app):
 
     with app.app_context():
         assert response.status_code == 200
+
+def test_profile_post(client, app):
+    response = client.post("/profileCreation", data={"user_id": "2", "fullname": "Bob Builder", "address1": "Some address", "address2": "Some address again", "city": "houston", "stateCode": "TX", "zipcode": "77777"})
+
+    with app.app_context():
+        assert Quote.query.count() > 0
+
+def test_profile_post_bad(client, app):
+    response = client.post("/profileCreation", data={"user_id": "2", "fullname": "", "address1": "Some address", "address2": "Some address again", "city": "houston", "stateCode": "TX", "zipcode": "77777"})
+
+    with app.app_context():
+        assert Quote.query.count() > 0
+
+def test_profile_info_get(client, app):
+    response = client.get("/profileInfo/1")
+
+    with app.app_context():
+        assert response.status_code == 200

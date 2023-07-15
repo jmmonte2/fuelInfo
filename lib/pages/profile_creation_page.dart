@@ -1,6 +1,7 @@
 import 'signup_page.dart';
 import 'dash_board_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterproject/services/http_request.dart';
 
 class ProfileCreation extends StatefulWidget {
   const ProfileCreation({super.key});
@@ -10,7 +11,7 @@ class ProfileCreation extends StatefulWidget {
 }
 
 class _ProfileCreationState extends State<ProfileCreation> {
-  String? fullName;
+  String? fullname;
   String? address1;
   String? address2; //optional
   String? city;
@@ -94,7 +95,7 @@ class _ProfileCreationState extends State<ProfileCreation> {
         return null;
       },
       onSaved: (value) {
-        fullName = value;
+        fullname = value;
       },
     );
   }
@@ -253,10 +254,8 @@ class _ProfileCreationState extends State<ProfileCreation> {
                 color: Colors.white,
               ),
               onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => RegisterPage())
-                );
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => RegisterPage()));
               },
               tooltip: 'Go Back',
             );
@@ -293,19 +292,32 @@ class _ProfileCreationState extends State<ProfileCreation> {
                       ),
                     ),
                     // TODO: Fix later to send to database instead of passing straight to profile
-                    onPressed: () {
+                    onPressed: () async {
                       if (_formKey.currentState!.validate()) {
                         _formKey.currentState?.save();
-                        print(fullName);
-                        print(address1);
-                        print(address2);
-                        print(city);
-                        print(stateCode);
-                        print(zipcode);
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => const Dashboard())
-                        );
+
+                        // Testing
+                        // print(fullname);
+                        // print(address1);
+                        // print(address2);
+                        // print(city);
+                        // print(stateCode);
+                        // print(zipcode);
+                        // Navigator.push(
+                        //     context,
+                        //     MaterialPageRoute(builder: (context) => const Dashboard())
+                        // );
+
+                        // Save and send to
+                        await HttpRequest.handleProfileCreation(
+                            "1",
+                            fullname.toString(),
+                            address1.toString(),
+                            address2.toString(),
+                            city.toString(),
+                            stateCode.toString(),
+                            zipcode.toString(),
+                            context);
                       }
                     },
                   ),
