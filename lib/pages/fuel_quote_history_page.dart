@@ -1,6 +1,4 @@
-import 'package:flutterproject/services/http_request.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'data.dart';
 import 'dash_board_page.dart';
 
@@ -14,33 +12,15 @@ class FuelHistory extends StatefulWidget {
 }
 
 class FuelQuoteHistory extends State<FuelHistory> {
-  List<Map<String, dynamic>> quotes = [];
-  final List<Quote> data = [];
-
-  @override
-  void initState(){
-    super.initState();
-    fetchData();
-  }
-
-  Future<void> fetchData() async {
-    quotes = await HttpRequest.handleQuoteGet(1);
-    setState(() {
-      for (var i = 0; i < quotes.length; i++) {
-        DateTime date = DateFormat('EEE, dd MMM yyyy HH:mm:ss').parse(quotes[i]['date']);
-        String formattedDate = DateFormat('yyyy-MM-dd').format(date);
-        final quote = Quote(
-          id: quotes[i]['id'],
-          gallons: quotes[i]['gallons'],
-          address: quotes[i]['address'],
-          date: formattedDate,
-          suggested: quotes[i]['suggested'],
-          total: quotes[i]['total'],
-        );
-        data.add(quote);
-      }
-    });
-  }
+  final List<Quote> _data = [
+    const Quote(id: 1, gallons: 3, address: '321 Elmo Street', date: '2023-05-30', suggested: 100, total: 300),
+    const Quote(id: 2, gallons: 12, address: '321 Elmo Street', date: '2023-06-02', suggested: 100, total: 1200),
+    const Quote(id: 3, gallons: 15, address: '321 Elmo Street', date: '2023-06-14', suggested: 100, total: 1500),
+    const Quote(id: 4, gallons: 6, address: '461 Art Avenue', date: '2023-06-19', suggested: 200, total: 1200),
+    const Quote(id: 5, gallons: 1, address: '321 Elmo Street', date: '2023-06-25', suggested: 100, total: 100),
+    const Quote(id: 6, gallons: 4, address: '461 Art Avenue', date: '2023-06-27', suggested: 50, total: 200),
+    const Quote(id: 7, gallons: 7, address: '461 Art Avenue', date: '2023-06-30', suggested: 100, total: 700),
+  ];
 
   int sortColumn = 0;
   bool isAscending = true;
@@ -73,107 +53,106 @@ class FuelQuoteHistory extends State<FuelHistory> {
             },
           ),
         ),
-        body: LayoutBuilder(
-            builder: (BuildContext context, BoxConstraints constraints) {
-              return SingleChildScrollView(
+        body: SizedBox(
+          width: double.infinity,
+          child: ListView(
+            children: [
+              SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
-                child: SizedBox(
-                  width: constraints.maxWidth,
-                  child: DataTable(
-                    sortColumnIndex: sortColumn,
-                    sortAscending: isAscending,
-                    headingRowColor: MaterialStateProperty.all(const Color(0xFFE0E0E0)),
-                    columns: [
-                      DataColumn(
-                          label: const Text(
-                            'ID',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold),
-                          ),
-                          onSort: (columnIndex, _) {
-                            setState(() {
-                              sortColumn = columnIndex;
-                              if (isAscending == true) {
-                                isAscending = false;
-                                data.sort((quoteA, quoteB) => quoteB.id.compareTo(quoteA.id));
-                              } else {
-                                isAscending = true;
-                                data.sort((quoteA, quoteB) => quoteA.id.compareTo(quoteB.id));
-                              }
-                            });
-                          }),
-                      DataColumn(
-                          label: const Text(
-                            'Gallons',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold),
-                          ),
-                          onSort: (columnIndex, _) {
-                            setState(() {
-                              sortColumn = columnIndex;
-                              if (isAscending == true) {
-                                isAscending = false;
-                                data.sort((quoteA, quoteB) => quoteB.gallons.compareTo(quoteA.gallons));
-                              } else {
-                                isAscending = true;
-                                data.sort((quoteA, quoteB) => quoteA.gallons.compareTo(quoteB.gallons));
-                              }
-                            });
-                          }),
-                      const DataColumn(label: Text('Address')),
-                      DataColumn(
-                          label: const Text(
-                            'Date',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold),
-                          ),
-                          onSort: (columnIndex, _) {
-                            setState(() {
-                              sortColumn = columnIndex;
-                              if (isAscending == true) {
-                                isAscending = false;
-                                data.sort((quoteA, quoteB) => quoteB.date.compareTo(quoteA.date));
-                              } else {
-                                isAscending = true;
-                                data.sort((quoteA, quoteB) => quoteA.date.compareTo(quoteB.date));
-                              }
-                            });
-                          }),
-                      const DataColumn(label: Text('Suggested')),
-                      DataColumn(
-                          label: const Text(
-                            'Total',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold),
-                          ),
-                          onSort: (columnIndex, _) {
-                            setState(() {
-                              sortColumn = columnIndex;
-                              if (isAscending == true) {
-                                isAscending = false;
-                                data.sort((quoteA, quoteB) => quoteB.total.compareTo(quoteA.total));
-                              } else {
-                                isAscending = true;
-                                data.sort((quoteA, quoteB) => quoteA.total.compareTo(quoteB.total));
-                              }
-                            });
-                          }),
-                    ],
-                    rows: data.map((item) {
-                      return DataRow(cells: [
-                        DataCell(Text(item.id.toString())),
-                        DataCell(Text(item.gallons.toString())),
-                        DataCell(Text(item.address)),
-                        DataCell(Text(item.date)),
-                        DataCell(Text('\$${item.suggested}/gal')),
-                        DataCell(Text('\$${item.total}')),
-                      ]);
-                    }).toList(),
-                  ),
+                child: DataTable(
+                  sortColumnIndex: sortColumn,
+                  sortAscending: isAscending,
+                  headingRowColor: MaterialStateProperty.all(const Color(0xFFE0E0E0)),
+                  columns: [
+                    DataColumn(
+                        label: const Text(
+                          'ID',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold),
+                        ),
+                        onSort: (columnIndex, _) {
+                          setState(() {
+                            sortColumn = columnIndex;
+                            if (isAscending == true) {
+                              isAscending = false;
+                              _data.sort((quoteA, quoteB) => quoteB.id.compareTo(quoteA.id));
+                            } else {
+                              isAscending = true;
+                              _data.sort((quoteA, quoteB) => quoteA.id.compareTo(quoteB.id));
+                            }
+                          });
+                        }),
+                    DataColumn(
+                        label: const Text(
+                          'Gallons',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold),
+                        ),
+                        onSort: (columnIndex, _) {
+                          setState(() {
+                            sortColumn = columnIndex;
+                            if (isAscending == true) {
+                              isAscending = false;
+                              _data.sort((quoteA, quoteB) => quoteB.gallons.compareTo(quoteA.gallons));
+                            } else {
+                              isAscending = true;
+                              _data.sort((quoteA, quoteB) => quoteA.gallons.compareTo(quoteB.gallons));
+                            }
+                          });
+                        }),
+                    const DataColumn(label: Text('Address')),
+                    DataColumn(
+                        label: const Text(
+                          'Date',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold),
+                        ),
+                        onSort: (columnIndex, _) {
+                          setState(() {
+                            sortColumn = columnIndex;
+                            if (isAscending == true) {
+                              isAscending = false;
+                              _data.sort((quoteA, quoteB) => quoteB.date.compareTo(quoteA.date));
+                            } else {
+                              isAscending = true;
+                              _data.sort((quoteA, quoteB) => quoteA.date.compareTo(quoteB.date));
+                            }
+                          });
+                        }),
+                    const DataColumn(label: Text('Suggested')),
+                    DataColumn(
+                        label: const Text(
+                          'Total',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold),
+                        ),
+                        onSort: (columnIndex, _) {
+                          setState(() {
+                            sortColumn = columnIndex;
+                            if (isAscending == true) {
+                              isAscending = false;
+                              _data.sort((quoteA, quoteB) => quoteB.total.compareTo(quoteA.total));
+                            } else {
+                              isAscending = true;
+                              _data.sort((quoteA, quoteB) => quoteA.total.compareTo(quoteB.total));
+                            }
+                          });
+                        }),
+                  ],
+                  rows: _data.map((item) {
+                    return DataRow(cells: [
+                      DataCell(Text(item.id.toString())),
+                      DataCell(Text(item.gallons.toString())),
+                      DataCell(Text(item.address)),
+                      DataCell(Text(item.date)),
+                      DataCell(Text('\$${item.suggested}/gal')),
+                      DataCell(Text('\$${item.total}')),
+                    ]);
+                  }).toList(),
                 ),
-              );
-            }
-        )
-    );
+              )
+            ],
+          ),
+        ));
   }
 }
