@@ -3,8 +3,8 @@ class Quote {
   final int  gallons;
   final String address;
   final String date;
-  final int  suggested;
-  final int total;
+  final double  suggested;
+  final double total;
 
   const Quote({
     required this.id,

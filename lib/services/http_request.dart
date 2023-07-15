@@ -1,3 +1,5 @@
+import 'dart:js';
+
 import 'package:flutter/services.dart';
 import 'package:flutterproject/pages/dash_board_page.dart';
 import 'package:http/http.dart' as http;
@@ -8,18 +10,17 @@ import 'package:flutterproject/pages/login_page.dart';
 import 'package:flutterproject/pages/profile_creation_page.dart';
 import 'package:flutter/foundation.dart';
 
+
 class HttpRequest {
   // set up http client to able to send requests to endpoints
   static final httpClient = http.Client();
   static var loginEndPoint = Uri.parse('http://127.0.0.1:5000/login');
   static var signUpEndPoint = Uri.parse('http://127.0.0.1:5000/signup');
-  static var quoteEndPoint = Uri.parse('http://127.0.0.1:5000/quote');
-  static var profileEndPoint =
-      Uri.parse('http://127.0.0.1:5000/profileCreation');
+  static var profileEndPoint = Uri.parse('http://127.0.0.1:5000/profileCreation');
 
   static handleSignUp(username, password, email, context) async {
     //Change Local Host uri when running on an android device
-    if (defaultTargetPlatform == TargetPlatform.android) {
+    if (defaultTargetPlatform == TargetPlatform.android){
       signUpEndPoint = Uri.parse('http://10.0.2.2:5000/signup');
     }
 
@@ -27,7 +28,7 @@ class HttpRequest {
     http.Response response = await httpClient.post(signUpEndPoint, body: {
       "username": username,
       "password": password,
-      "email": email,
+      "email" : email,
     });
 
     // error occurs
@@ -44,11 +45,15 @@ class HttpRequest {
         await EasyLoading.showSuccess(json[0]);
 
         await Navigator.push(
-            context, MaterialPageRoute(builder: (context) => LoginPage()));
+            context,
+            MaterialPageRoute(builder: (context) => LoginPage()));
       } else {
         EasyLoading.showError(json[0]);
+
       }
+
     }
+
   }
 
   static handleLogin(username, password, context) async {
@@ -70,30 +75,57 @@ class HttpRequest {
 
       if (json[0] == 'success') {
         await EasyLoading.showSuccess(json[0]);
-        await Navigator.push(context,
-            MaterialPageRoute(builder: (context) => ProfileCreation()));
+        handleProfileCheck(1, context);
       } else {
         EasyLoading.showError(json[0]);
       }
+
+
     }
+
   }
 //  userName,
+  static handleProfileCheck(id, context) async {
+    var profileCheckEndPoint = Uri.parse('http://127.0.0.1:5000/profileInfo/$id');
+    // send post request
+    http.Response response = await httpClient.get(profileCheckEndPoint);
+    // error occurs
+    if (response.statusCode != 200) {
+      await EasyLoading.showError(
+          "Error Code : ${response.statusCode.toString()}");
+    } else {
+      // response received by endpoint
+      print(jsonDecode(response.body));
+      var json = jsonDecode(response.body);
+      if (json != null ) {
+        await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => Dashboard()));
+      } else {
+        await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ProfileCreation()));
+      }
 
-  static handleQuotePost(
-      userId, gallons, address, date, suggested, total, context) async {
+
+    }
+
+  }
+
+  static handleQuotePost(userId, gallons, address, date, suggested, total, context) async {
+    var quoteEndPoint = Uri.parse('http://127.0.0.1:5000/quote/$userId');
     //Change Local Host uri when running on an android device
-    if (defaultTargetPlatform == TargetPlatform.android) {
-      quoteEndPoint = Uri.parse('http://10.0.2.2:5000/quote');
+    if (defaultTargetPlatform == TargetPlatform.android){
+      quoteEndPoint = Uri.parse('http://10.0.2.2:5000/quote/$userId');
     }
 
     // send post request
     http.Response response = await httpClient.post(quoteEndPoint, body: {
-      "user_id": userId,
       "gallons": gallons,
-      "address": address,
-      "date": date,
-      "suggested": suggested,
-      "total": total,
+      "address" : address,
+      "date" : date,
+      "suggested" : suggested,
+      "total" : total,
     });
 
     // error occurs
@@ -107,19 +139,110 @@ class HttpRequest {
       if (json[0] == 'Fuel Quote created') {
         await EasyLoading.showSuccess(json[0]);
 
-        await Navigator.push(context,
+        await Navigator.push(
+            context,
             MaterialPageRoute(builder: (context) => const Dashboard()));
       } else {
         EasyLoading.showError(json[0]);
         print(json[0]);
+
       }
+
+    }
+
+  }
+
+  static handleQuoteGet(id) async {
+    var quoteEndPoint = Uri.parse('http://127.0.0.1:5000/quote/$id');
+    //Change Local Host uri when running on an android device
+    if (defaultTargetPlatform == TargetPlatform.android){
+      quoteEndPoint = Uri.parse('http://10.0.2.2:5000/quote/$id');
+    }
+
+    // send post request
+    http.Response response = await httpClient.get(quoteEndPoint);
+
+    // error occurs
+    if (response.statusCode != 200) {
+      await EasyLoading.showError(
+          "Error Code : ${response.statusCode.toString()}");
+    } else {
+      // response received by endpoint
+      final decodedResponse = json.decode(response.body);
+      final List<Map<String, dynamic>> map = List.from(decodedResponse);
+      return (map);
+
+    }
+
+  }
+
+  static handleFuelQuoteGet(id) async {
+    var fuelQuoteEndPoint = Uri.parse('http://127.0.0.1:5000/fuelquote/$id');
+    //Change Local Host uri when running on an android device
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      fuelQuoteEndPoint = Uri.parse('http://10.0.2.2:5000/fuelquote/$id');
+    }
+
+    // send post request
+    http.Response response = await httpClient.get(fuelQuoteEndPoint);
+
+    // error occurs
+    if (response.statusCode != 200) {
+      await EasyLoading.showError(
+          "Error Code : Data Could Not Be Pulled");
+    } else {
+      // response received by endpoint
+      Map<String, dynamic> map = json.decode(response.body);
+      return (map);
     }
   }
 
-  static handleProfileCreation(userId, fullname, address1, address2, city,
-      stateCode, zipcode, context) async {
+  static handleDashGet(id) async {
+    var dashboardEndPoint = Uri.parse('http://127.0.0.1:5000/dashboard/$id');
+    //Change Local Host uri when running on an android device
     if (defaultTargetPlatform == TargetPlatform.android) {
-      quoteEndPoint = Uri.parse('http://10.0.2.2:5000/profileCreation');
+      dashboardEndPoint = Uri.parse('http://10.0.2.2:5000/dashboard/$id');
+    }
+
+    // send post request
+    http.Response response = await httpClient.get(dashboardEndPoint);
+
+    // error occurs
+    if (response.statusCode != 200) {
+      await EasyLoading.showError(
+          "Error Code : Data Could Not Be Pulled");
+    } else {
+      // response received by endpoint
+      final decodedResponse = json.decode(response.body);
+      final List<Map<String, dynamic>> map = List.from(decodedResponse);
+      return (map);
+    }
+  }
+
+  static handleCustomerGet(id) async {
+    var dashboardEndPoint = Uri.parse('http://127.0.0.1:5000/customer/$id');
+    //Change Local Host uri when running on an android device
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      dashboardEndPoint = Uri.parse('http://10.0.2.2:5000/customer/$id');
+    }
+
+    // send post request
+    http.Response response = await httpClient.get(dashboardEndPoint);
+
+    // error occurs
+    if (response.statusCode != 200) {
+      await EasyLoading.showError(
+          "Error Code : Data Could Not Be Pulled");
+    } else {
+      // response received by endpoint
+      Map<String, dynamic> map = json.decode(response.body);
+      return (map);
+    }
+  }
+
+  static handleProfileCreation(userId, fullname, address1, address2, city, stateCode, zipcode, context) async {
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      profileEndPoint = Uri.parse('http://10.0.2.2:5000/profileCreation');
     }
     http.Response response = await httpClient.post(profileEndPoint, body: {
       "user_id": userId,
@@ -148,4 +271,5 @@ class HttpRequest {
       }
     }
   }
+
 }
