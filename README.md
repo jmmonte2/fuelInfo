@@ -27,7 +27,7 @@
 - Pricing Module
 ## Code Coverage via pyTest
 
-![App Screenshot](imgur.com/a/qUbt5up.jpg)
+![App Screenshot](https://imgur.com/cZfAqPw.jpg)
 
 
 ## Run Locally
