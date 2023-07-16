@@ -272,4 +272,56 @@ class HttpRequest {
     }
   }
 
+  static handleProfileInfo(id) async {
+    var profileEndPoint = Uri.parse('http://127.0.0.1:5000/profileInfo/$id');
+
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      profileEndPoint = Uri.parse('http://10.0.2.2:5000/profileInfo/$id');
+    }
+    http.Response response = await httpClient.get(profileEndPoint);
+
+    // error occurs
+    if (response.statusCode != 200) {
+      await EasyLoading.showError("Error: Profile Info Could not be pulled");
+    } else {
+      // response received by endpoint
+      Map<String, dynamic> map = json.decode(response.body);
+      return (map);
+    }
+  }
+
+  static handleEditProfile(id, fullname, address1, address2, city, stateCode,
+      zipcode, context) async {
+    var editProfileEndPoint = Uri.parse('http://127.0.0.1:5000/editProfile');
+
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      quoteEndPoint = Uri.parse('http://10.0.2.2:5000/editProfile');
+    }
+    http.Response response = await httpClient.post(editProfileEndPoint, body: {
+      "user_id": id,
+      "fullname": fullname,
+      "address1": address1,
+      "address2": address2,
+      "city": city,
+      "stateCode": stateCode,
+      "zipcode": zipcode,
+    });
+    if (response.statusCode != 200) {
+      await EasyLoading.showError(
+          "Error Code : ${response.statusCode.toString()}");
+    } else {
+      // response received by endpoint
+      var json = jsonDecode(response.body);
+
+      if (json[0] == 'Profile edited') {
+        await EasyLoading.showSuccess(json[0]);
+        await Navigator.push(context,
+            MaterialPageRoute(builder: (context) => const ProfilePage()));
+      } else {
+        EasyLoading.showError(json[0]);
+        print(json[0]);
+      }
+    }
+  }
+
 }
