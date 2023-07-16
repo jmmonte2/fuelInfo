@@ -1,22 +1,11 @@
 import 'dash_board_page.dart';
 import 'profile_edit_page.dart';
+import 'package:flutterproject/services/http_request.dart';
 import 'package:flutter/material.dart';
 
 class ProfilePage extends StatefulWidget {
-  final String userFullName;
-  final String userAddress1;
-  final String userAddress2;
-  final String userCity;
-  final String userStateCode;
-  final String userZipcode;
   const ProfilePage({
     super.key,
-    required this.userFullName,
-    required this.userAddress1,
-    required this.userAddress2,
-    required this.userCity,
-    required this.userStateCode,
-    required this.userZipcode,
   });
 
   @override
@@ -26,9 +15,33 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   //TODO: username TEMP FIX FOR AUTHETIFCATION
   final String currentUser = "Tester";
+  String fullname = "test";
+  String address1 = " test";
+  String address2 = "test";
+  String city = "test";
+  String stateCode = "test";
+  String zipcode = "test";
+
+  @override
+  void initState() {
+    super.initState();
+    getProfile();
+  }
 
   // final _formkey = GlobalKey<FormState>();
   // final TextEditingController _textEditingController = TextEditingController();
+
+  Future<void> getProfile() async {
+    Map<String, dynamic> profileData = await HttpRequest.handleProfileInfo(1);
+    setState(() {
+      fullname = profileData['fullname'];
+      address1 = profileData['address1'];
+      address2 = profileData['address2'];
+      city = profileData['city'];
+      stateCode = profileData['stateCode'];
+      zipcode = profileData['zipcode'];
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,8 +64,8 @@ class _ProfilePageState extends State<ProfilePage> {
                 onPressed: () {
                   Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const Dashboard())
-                  );
+                      MaterialPageRoute(
+                          builder: (context) => const Dashboard()));
                 },
                 tooltip: 'Go Back',
               );
@@ -109,7 +122,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       height: 10,
                     ),
                     //text
-                    Text(widget.userFullName),
+                    Text(fullname),
                   ],
                 )),
 
@@ -130,7 +143,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                     const SizedBox(height: 5),
                     //user address 1
-                    Text(widget.userAddress1),
+                    Text(address1),
                     const SizedBox(height: 10),
 
                     //user address 2
@@ -139,7 +152,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       style: TextStyle(color: Colors.grey[500]),
                     ),
                     const SizedBox(height: 5),
-                    Text(widget.userAddress2),
+                    Text(address2),
                     const SizedBox(height: 10),
 
                     //user city
@@ -148,7 +161,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       style: TextStyle(color: Colors.grey[500]),
                     ),
                     const SizedBox(height: 5),
-                    Text(widget.userCity),
+                    Text(city),
                     const SizedBox(height: 10),
 
                     //user state
@@ -158,7 +171,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       style: TextStyle(color: Colors.grey[500]),
                     ),
                     const SizedBox(height: 5),
-                    Text(widget.userStateCode),
+                    Text(stateCode),
                     const SizedBox(height: 10),
 
                     // user zipcode
@@ -167,7 +180,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       style: TextStyle(color: Colors.grey[500]),
                     ),
                     const SizedBox(height: 5),
-                    Text(widget.userZipcode),
+                    Text(zipcode),
                   ],
                 )),
             // Navigation Buttons
@@ -195,7 +208,8 @@ class _ProfilePageState extends State<ProfilePage> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => const ProfileEdit()));
+                                      builder: (context) =>
+                                          const ProfileEdit()));
                             }),
                       ],
                     ),
