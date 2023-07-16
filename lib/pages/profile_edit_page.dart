@@ -1,5 +1,7 @@
 import 'profilePage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterproject/services/http_request.dart';
+import 'package:intl/intl.dart';
 
 class ProfileEdit extends StatefulWidget {
   const ProfileEdit({super.key});
@@ -9,12 +11,19 @@ class ProfileEdit extends StatefulWidget {
 }
 
 class _ProfileEditState extends State<ProfileEdit> {
-  String? fullName;
+  String? fullname;
   String? address1;
   String? address2; //optional
   String? city;
   String? stateCode;
   String? zipcode;
+
+  final nameInput = TextEditingController();
+  final address1Input = TextEditingController();
+  final address2Input = TextEditingController();
+  final cityInput = TextEditingController();
+  // final stateInput = TextEditingController(); // TEST: Not needed for dropdown
+  final zipcodeInput = TextEditingController();
 
   final Map<String, String> _stateCodesList = {
     'Alabama': 'AL',
@@ -70,6 +79,37 @@ class _ProfileEditState extends State<ProfileEdit> {
     'Wyoming': 'WY',
   };
 
+  @override
+  void initState() {
+    nameInput.text = '';
+    address1Input.text = '';
+    address2Input.text = '';
+    cityInput.text = '';
+    // stateInput.text = ''; // TEST: Not needed for dropdown
+    zipcodeInput.text = '';
+    super.initState();
+    getProfile();
+  }
+
+  Future<void> getProfile() async {
+    Map<String, dynamic> profileData = await HttpRequest.handleProfileInfo(1);
+    setState(() {
+      fullname = profileData['fullname'];
+      address1 = profileData['address1'];
+      address2 = profileData['address2'];
+      city = profileData['city'];
+      stateCode = profileData['stateCode'];
+      zipcode = profileData['zipcode'];
+
+      nameInput.text = fullname.toString();
+      address1Input.text = address1.toString();
+      address2Input.text = address2.toString();
+      cityInput.text = city.toString();
+      // stateInput.text = stateCode.toString(); // TEST: Not needed for dropdown
+      zipcodeInput.text = zipcode.toString();
+    });
+  }
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   Widget buildFullName() {
@@ -80,6 +120,7 @@ class _ProfileEditState extends State<ProfileEdit> {
         isDense: true,
         border: OutlineInputBorder(),
       ),
+      controller: nameInput,
       maxLength: 50,
       validator: (value) {
         if (value == null || value.isEmpty) {
@@ -93,10 +134,8 @@ class _ProfileEditState extends State<ProfileEdit> {
         return null;
       },
       onSaved: (value) {
-        fullName = value;
+        fullname = value;
       },
-      // TODO Hardcode Remove Later
-      initialValue: "Bob Builder",
     );
   }
 
@@ -108,6 +147,7 @@ class _ProfileEditState extends State<ProfileEdit> {
         isDense: true,
         border: OutlineInputBorder(),
       ),
+      controller: address1Input,
       maxLength: 100,
       validator: (value) {
         if (value == null || value.isEmpty) {
@@ -123,8 +163,6 @@ class _ProfileEditState extends State<ProfileEdit> {
       onSaved: (value) {
         address1 = value;
       },
-      // TODO Hardcode Remove Later
-      initialValue: "321 Elmo Street",
     );
   }
 
@@ -136,6 +174,7 @@ class _ProfileEditState extends State<ProfileEdit> {
         isDense: true,
         border: OutlineInputBorder(),
       ),
+      controller: address2Input,
       maxLength: 100,
       validator: (value) {
         if (value == null || value.isEmpty) {
@@ -148,8 +187,6 @@ class _ProfileEditState extends State<ProfileEdit> {
       onSaved: (value) {
         address2 = value;
       },
-      // TODO Hardcode Remove Later
-      initialValue: "461 Art Avenue",
     );
   }
 
@@ -161,6 +198,7 @@ class _ProfileEditState extends State<ProfileEdit> {
         isDense: true,
         border: OutlineInputBorder(),
       ),
+      controller: cityInput,
       maxLength: 100,
       validator: (value) {
         if (value == null || value.isEmpty) {
@@ -175,8 +213,6 @@ class _ProfileEditState extends State<ProfileEdit> {
       onSaved: (value) {
         city = value;
       },
-      // TODO Hardcode Remove Later
-      initialValue: "Houston",
     );
   }
 
@@ -190,18 +226,18 @@ class _ProfileEditState extends State<ProfileEdit> {
       ),
       items: _stateCodesList
           .map((description, value) {
-        return MapEntry(
-            value,
-            DropdownMenuItem<String>(
-              value: value,
-              child: Text(description),
-            ));
-      })
+            return MapEntry(
+                value,
+                DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(description),
+                ));
+          })
           .values
           .toList(),
       // TODO Hardcode Remove Later
       //value: stateCode,
-      value: stateCode = 'TX',
+      value: stateCode,
       onChanged: (value) {
         setState(() {
           stateCode = value;
@@ -227,6 +263,7 @@ class _ProfileEditState extends State<ProfileEdit> {
         isDense: true,
         border: OutlineInputBorder(),
       ),
+      controller: zipcodeInput,
       maxLength: 9,
       validator: (value) {
         if (value == null || value.isEmpty) {
@@ -240,8 +277,6 @@ class _ProfileEditState extends State<ProfileEdit> {
       onSaved: (value) {
         zipcode = value;
       },
-      // TODO Hardcode Remove Later
-      initialValue: "77777",
     );
   }
 
@@ -263,19 +298,11 @@ class _ProfileEditState extends State<ProfileEdit> {
                 Icons.arrow_back,
                 color: Colors.white,
               ),
-              onPressed: () {
+              onPressed: () async {
                 Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) =>                                             const ProfilePage(
-                      userFullName: 'Bob Builder',
-                      userAddress1: '321 Elmo Street',
-                      userAddress2: '461 Art Avenue',
-                      userCity: 'Houston',
-                      userStateCode: 'TX',
-                      userZipcode: '77777',
-                    )
-                    )
-                );
+                    MaterialPageRoute(
+                        builder: (context) => const ProfilePage()));
               },
               tooltip: 'Go Back',
             );
@@ -312,26 +339,28 @@ class _ProfileEditState extends State<ProfileEdit> {
                       ),
                     ),
                     // TODO: Fix later to send to database instead of passing straight to profile
-                    onPressed: () {
+                    onPressed: () async {
                       if (_formKey.currentState!.validate()) {
                         _formKey.currentState?.save();
-                        print(fullName);
-                        print(address1);
-                        print(address2);
-                        print(city);
-                        print(stateCode);
-                        print(zipcode);
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const ProfilePage(
-                                  userFullName: 'Bob Builder',
-                                  userAddress1: '321 Elmo Street',
-                                  userAddress2: '461 Art Avenue',
-                                  userCity: 'Houston',
-                                  userStateCode: 'TX',
-                                  userZipcode: '77777',
-                                )));
+                        // print(fullname);
+                        // print(address1);
+                        // print(address2);
+                        // print(city);
+                        // print(stateCode);
+                        // print(zipcode);
+                        // Navigator.push(
+                        //     context,
+                        //     MaterialPageRoute(
+                        //         builder: (context) => const ProfilePage()));
+                        await HttpRequest.handleEditProfile(
+                            "1",
+                            fullname.toString(),
+                            address1.toString(),
+                            address2.toString(),
+                            city.toString(),
+                            stateCode.toString(),
+                            zipcode.toString(),
+                            context);
                       }
                     },
                   ),
