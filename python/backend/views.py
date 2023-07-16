@@ -181,7 +181,8 @@ def getCustomerData(id):
             username = row.username
             d['username'] = username
         return jsonify (d)
-    
+
+
 @views.route('/profileCreation', methods=["GET", "POST"])
 @cross_origin(supports_credentials=True)
 def profileCreation():
@@ -216,7 +217,9 @@ def profileCreation():
             print("Profile Failed Validation")
             errors = form.errors
             return jsonify([str(errors)])
-        
+
+
+# Get profile information for customer for a given id       
 @views.route('/profileInfo/<int:id>', methods=["GET"])
 @cross_origin(supports_credentials=True)
 def getProfile(id):
@@ -231,4 +234,46 @@ def getProfile(id):
             info['stateCode'] = found_user.stateCode
             info['zipcode'] = found_user.zipcode
         return jsonify (info)
+
+
+@views.route('/editProfile', methods=["GET", "POST"])
+@cross_origin(supports_credentials=True)
+def editProfile():
+    if request.method == "POST":
+        id = request.form["user_id"]
+        fullname = request.form["fullname"]
+        address1 = request.form["address1"]
+        address2 = request.form["address2"]
+        city = request.form["city"]
+        stateCode = request.form["stateCode"]
+        zipcode = request.form["zipcode"]
+
+        print("Profile Successfully Pulled")
+        form = UserProfileForm(request.form)
+        if form.validate():
+            id = form.user_id.data
+            fullname = form.fullname.data
+            address1 = form.address1.data
+            address2 = form.address2.data
+            city = form.city.data
+            stateCode = form.stateCode.data
+            zipcode = form.zipcode.data
+
+            found_user = Profile.query.filter_by(user_id = id).first()
+            if found_user:
+                found_user.fullname = fullname
+                found_user.address1 = address1
+                found_user.address2 = address2
+                found_user.city = city
+                found_user.stateCode = stateCode
+                found_user.zipcode = zipcode
+                db.session.commit()
+                print("Profile Successfully edited")
+
+                return jsonify([ "Profile edited"])
+            
+            else:
+                print("Profile Verification Failed")
+                errors = form.errors
+                return jsonify([str(errors)])
            
