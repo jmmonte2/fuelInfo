@@ -201,15 +201,7 @@ class Dash extends State<Dashboard> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            const ProfilePage(
-                                              userFullName: 'Bob Builder',
-                                              userAddress1: '321 Elmo Street',
-                                              userAddress2: '461 Art Avenue',
-                                              userCity: 'Houston',
-                                              userStateCode: 'TX',
-                                              userZipcode: '77777',
-                                            )
-                                    )
+                                            const ProfilePage())
                                 );
                               },
                             ),
