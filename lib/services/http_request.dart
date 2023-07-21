@@ -16,7 +16,6 @@ class HttpRequest {
   static final httpClient = http.Client();
   static var loginEndPoint = Uri.parse('http://127.0.0.1:5000/login');
   static var signUpEndPoint = Uri.parse('http://127.0.0.1:5000/signup');
-  static var profileEndPoint = Uri.parse('http://127.0.0.1:5000/profileCreation');
 
   static handleSignUp(username, password, email, context) async {
     //Change Local Host uri when running on an android device
@@ -240,9 +239,12 @@ class HttpRequest {
     }
   }
 
-  static handleProfileCreation(userId, fullname, address1, address2, city, stateCode, zipcode, context) async {
+  static handleProfileCreation(userId, fullname, address1, address2, city,
+      stateCode, zipcode, context) async {
+    var profileEndPoint =
+        Uri.parse('http://127.0.0.1:5000/profileCreation/$userId');
     if (defaultTargetPlatform == TargetPlatform.android) {
-      profileEndPoint = Uri.parse('http://10.0.2.2:5000/profileCreation');
+      quoteEndPoint = Uri.parse('http://10.0.2.2:5000/profileCreation/$userId');
     }
     http.Response response = await httpClient.post(profileEndPoint, body: {
       "user_id": userId,
@@ -290,15 +292,16 @@ class HttpRequest {
     }
   }
 
-  static handleEditProfile(id, fullname, address1, address2, city, stateCode,
-      zipcode, context) async {
-    var editProfileEndPoint = Uri.parse('http://127.0.0.1:5000/editProfile');
+  static handleEditProfile(userId, fullname, address1, address2, city,
+      stateCode, zipcode, context) async {
+    var editProfileEndPoint =
+        Uri.parse('http://127.0.0.1:5000/editProfile/$userId');
 
     if (defaultTargetPlatform == TargetPlatform.android) {
-      quoteEndPoint = Uri.parse('http://10.0.2.2:5000/editProfile');
+      quoteEndPoint = Uri.parse('http://10.0.2.2:5000/editProfile/$userId');
     }
     http.Response response = await httpClient.post(editProfileEndPoint, body: {
-      "user_id": id,
+      "user_id": userId,
       "fullname": fullname,
       "address1": address1,
       "address2": address2,
