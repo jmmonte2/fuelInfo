@@ -31,9 +31,12 @@ class _ProfilePageState extends State<ProfilePage> {
   // final _formkey = GlobalKey<FormState>();
   // final TextEditingController _textEditingController = TextEditingController();
 
+  // TODO: Replace hardcoded value for http request for current user id
   Future<void> getProfile() async {
     Map<String, dynamic> profileData = await HttpRequest.handleProfileInfo(1);
+    Map<String, dynamic> userData = await HttpRequest.handleCustomerGet(1);
     setState(() {
+      currentUser = userData['username'];
       fullname = profileData['fullname'];
       address1 = profileData['address1'];
       address2 = profileData['address2'];
