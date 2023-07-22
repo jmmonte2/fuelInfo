@@ -14,15 +14,7 @@
 
 ## Roadmap
 
-- Sign Up Database integrations
-
-- Log In Database integrations
-
-- Account Encryption
-
-- Profile Database integrations
-
-- Responsive Pages for mobile and desktop
+- Internal Testing for Presentation
 
 - Pricing Module
 ## Code Coverage via pyTest
