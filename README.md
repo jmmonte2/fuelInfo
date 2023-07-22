@@ -27,16 +27,10 @@
 - Pricing Module
 ## Code Coverage via pyTest
 
-![App Screenshot](https://imgur.com/cZfAqPw.jpg)
+![App Screenshot](https://imgur.com/ILLJgSs.jpg)
 
 
 ## Run Locally
-
-Clone the project
-
-```bash
-  git clone https://link-to-project
-```
 
 Add files to you project directory
 
@@ -50,32 +44,33 @@ Install dependencies
 ```bash
     pip install: 
 
-        bcrypt
-        blinker
-        click
-        colorama
-        coverage
-        dnspython
-        email-validator
-        Flask
-        Flask-Cors
-        Flask-SQLAlchemy
-        Flask-WTF
-        greenlet
-        idna
-        iniconfig
-        itsdangerous
-        Jinja2
-        MarkupSafe
-        packaging
-        passlib
-        pluggy
-        pytest
-        pytest-cov
-        SQLAlchemy
-        typing_extensions
-        Werkzeug
-        WTForms
+    bcrypt==4.0.1
+    blinker==1.6.2
+    click==8.1.4
+    colorama==0.4.6
+    coverage==7.2.7
+    dnspython==2.3.0
+    email-validator==2.0.0.post2
+    Flask==2.3.2
+    Flask-Cors==4.0.0
+    Flask-SQLAlchemy==3.0.5
+    Flask-WTF==1.1.1
+    greenlet==2.0.2
+    idna==3.4
+    iniconfig==2.0.0
+    itsdangerous==2.1.2
+    Jinja2==3.1.2
+    MarkupSafe==2.1.3
+    packaging==23.1
+    passlib==1.7.4
+    pluggy==1.2.0
+    pytest==7.4.0
+    pytest-cov==4.1.0
+    SQLAlchemy==2.0.18
+    typing_extensions==4.7.1
+    Werkzeug==2.3.6
+    WTForms==3.0.1
+
 
 ```
 
