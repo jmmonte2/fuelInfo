@@ -1,26 +1,27 @@
-import 'dash_board_page.dart';
-import 'profile_edit_page.dart';
+import 'package:flutterproject/pages/dash_board_page.dart';
+import 'package:flutterproject/pages/profile_edit_page.dart';
 import 'package:flutterproject/services/http_request.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class ProfilePage extends StatefulWidget {
-  const ProfilePage({
+class ProfilePageMobile extends StatefulWidget {
+  const ProfilePageMobile({
     super.key,
   });
 
   @override
-  State<ProfilePage> createState() => _ProfilePageState();
+  State<ProfilePageMobile> createState() => _ProfilePageState();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
+class _ProfilePageState extends State<ProfilePageMobile> {
   //TODO: username TEMP FIX FOR AUTHETIFCATION
-  final String currentUser = "Tester";
-  String fullname = "test";
-  String address1 = " test";
-  String address2 = "test";
-  String city = "test";
-  String stateCode = "test";
-  String zipcode = "test";
+  String currentUser = "";
+  String fullname = "";
+  String address1 = " ";
+  String address2 = "";
+  String city = "";
+  String stateCode = "";
+  String zipcode = "";
 
   @override
   void initState() {
@@ -31,15 +32,18 @@ class _ProfilePageState extends State<ProfilePage> {
   // final _formkey = GlobalKey<FormState>();
   // final TextEditingController _textEditingController = TextEditingController();
 
-  // TODO: Replace hardcoded value for http request for current user id
   Future<void> getProfile() async {
-    Map<String, dynamic> profileData = await HttpRequest.handleProfileInfo(1);
-    Map<String, dynamic> userData = await HttpRequest.handleCustomerGet(1);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int? customerId = prefs.getInt('customer_id');
+    Map<String, dynamic> profileData = await HttpRequest.handleProfileInfo(customerId);
+    Map<String, dynamic> autoFillData = await HttpRequest.handleCustomerGet(customerId);
+    currentUser = autoFillData['username'];
     setState(() {
-      currentUser = userData['username'];
       fullname = profileData['fullname'];
       address1 = profileData['address1'];
-      address2 = profileData['address2'];
+      if (profileData['address2'] != null){
+        address2 = profileData['address2'];
+      }
       city = profileData['city'];
       stateCode = profileData['stateCode'];
       zipcode = profileData['zipcode'];
@@ -52,7 +56,7 @@ class _ProfilePageState extends State<ProfilePage> {
         backgroundColor: const Color(0xFFEEEEEE),
         appBar: AppBar(
           title: const Text(
-            "Profile Page",
+            "Profile",
             style: TextStyle(color: Colors.white),
           ),
           centerTitle: true,
@@ -68,7 +72,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const Dashboard()));
+                          builder: (context) => const DashboardPage()));
                 },
                 tooltip: 'Go Back',
               );
@@ -212,7 +216,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          const ProfileEdit()));
+                                      const ProfileEdit()));
                             }),
                       ],
                     ),
