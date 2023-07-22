@@ -22,9 +22,9 @@ class LoginForm(FlaskForm):
 
 class UserProfileForm(FlaskForm):
     user_id = IntegerField('User_Id', validators=[DataRequired()])
-    fullname = StringField('Full Name', validators=[DataRequired()])
-    address1 = StringField('Address 1', validators=[DataRequired()])
-    address2 = StringField('Address 2', validators=[Optional()])
-    city = StringField('City', validators=[DataRequired()])
+    fullname = StringField('Full Name', validators=[DataRequired(), Length(max=50)])
+    address1 = StringField('Address 1', validators=[DataRequired(), Length(max=100)])
+    address2 = StringField('Address 2', validators=[Optional(), Length(max=100)])
+    city = StringField('City', validators=[DataRequired(), Length(max=100)])
     stateCode = StringField('State Code', validators=[DataRequired()])
-    zipcode = StringField('Zip Code', validators=[DataRequired(), Length(min=5)])
+    zipcode = StringField('Zip Code', validators=[DataRequired(), Length(min=5, max=9)])

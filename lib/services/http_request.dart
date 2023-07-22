@@ -14,6 +14,7 @@ class HttpRequest {
   static final httpClient = http.Client();
   static var loginEndPoint = Uri.parse('http://127.0.0.1:5000/login');
   static var signUpEndPoint = Uri.parse('http://127.0.0.1:5000/signup');
+
   static var profileEndPoint = Uri.parse(
       'http://127.0.0.1:5000/profileCreation');
 
@@ -200,8 +201,12 @@ class HttpRequest {
 
   static handleProfileCreation(userId, fullname, address1, address2, city,
       stateCode, zipcode, context) async {
+
+    var profileEndPoint =
+        Uri.parse('http://127.0.0.1:5000/profileCreation/$userId');
+
     if (defaultTargetPlatform == TargetPlatform.android) {
-      profileEndPoint = Uri.parse('http://10.0.2.2:5000/profileCreation');
+      quoteEndPoint = Uri.parse('http://10.0.2.2:5000/profileCreation/$userId');
     }
     http.Response response = await httpClient.post(profileEndPoint, body: {
       "user_id": userId,
@@ -240,6 +245,40 @@ class HttpRequest {
       print('Failed to create cookie: $e');
     }
   }
+
+  static handleEditProfile(userId, fullname, address1, address2, city,
+      stateCode, zipcode, context) async {
+    var editProfileEndPoint =
+        Uri.parse('http://127.0.0.1:5000/editProfile/$userId');
+
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      quoteEndPoint = Uri.parse('http://10.0.2.2:5000/editProfile/$userId');
+    }
+    http.Response response = await httpClient.post(editProfileEndPoint, body: {
+      "user_id": userId,
+      "fullname": fullname,
+      "address1": address1,
+      "address2": address2,
+      "city": city,
+      "stateCode": stateCode,
+      "zipcode": zipcode,
+    });
+    if (response.statusCode != 200) {
+      await EasyLoading.showError(
+          "Error Code : ${response.statusCode.toString()}");
+    } else {
+      // response received by endpoint
+      var json = jsonDecode(response.body);
+
+      if (json[0] == 'Profile edited') {
+        await EasyLoading.showSuccess(json[0]);
+        await Navigator.push(context,
+            MaterialPageRoute(builder: (context) => const ProfilePage()));
+      } else {
+        EasyLoading.showError(json[0]);
+        print(json[0]);
+      }
+
   // Function to get customer ID from the cookie using shared_preferences
   static Future<int?> getCustomerIdFromCookie() async {
     try {
