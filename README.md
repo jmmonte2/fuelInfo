@@ -16,7 +16,6 @@
 
 - Internal Testing for Presentation
 
-- Pricing Module
 ## Code Coverage via pyTest
 
 ![App Screenshot](https://imgur.com/ILLJgSs.jpg)
