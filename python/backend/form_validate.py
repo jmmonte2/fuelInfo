@@ -26,7 +26,6 @@ class LoginForm(FlaskForm):
     password = StringField('Password', validators=[DataRequired(), Length(min=8, max=30)])  # Field for password with validation for required and length constraints
 
 class UserProfileForm(FlaskForm):
-    user_id = IntegerField('User_Id', validators=[DataRequired()])
     fullname = StringField('Full Name', validators=[DataRequired(), Length(max=50)])
     address1 = StringField('Address 1', validators=[DataRequired(), Length(max=100)])
     address2 = StringField('Address 2', validators=[Optional(), Length(max=100)])
