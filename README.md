@@ -18,15 +18,15 @@
 
 ## Code Coverage via pyTest
 
-![App Screenshot](https://imgur.com/ILLJgSs.jpg)
+![App Screenshot](https://imgur.com/7RtuDtw.jpg)
 
 
 ## Run Locally
 
-Add files to you project directory
+Add files to your project directory
 
 ```bash
-  lib for flutter projects
+  lib, pubspec, and android for flutter projects
   python for flask projects
 ```
 
