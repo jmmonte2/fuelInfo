@@ -12,10 +12,6 @@
 - [@pistachieo](https://www.github.com/pistachieo)
 
 
-## Roadmap
-
-- Internal Testing for Presentation
-
 ## Code Coverage via pyTest
 
 ![App Screenshot](https://imgur.com/7RtuDtw.jpg)
